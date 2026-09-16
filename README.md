@@ -28,6 +28,16 @@ This installs dependencies and configures git hooks automatically via the `prepa
 | `pnpm unused` | Detect unused code with Knip |
 | `pnpm update` | Interactive dependency updates with Taze |
 
+## Architecture
+
+Code here follows **deep modules** (Ousterhout): a small interface over a large implementation. A module hides complexity behind one entry point rather than scattering it across many tiny files.
+
+- A domain starts as a single file — `src/lib/{domain}.ts`
+- Once it grows internals, it becomes `src/lib/{domain}/` with `index.ts` as its only entry
+- Export only what a caller needs; `pnpm unused` fails CI on exports nobody imports
+
+Full rules — boundaries, growth path, enforcement — are in [AGENTS.md](AGENTS.md).
+
 ## Development Workflow
 
 1. Write tests co-located with source files (`*.test.ts`)

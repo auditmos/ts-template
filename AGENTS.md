@@ -8,15 +8,50 @@ TypeScript template for building tool/service projects. Uses ESM-only modules wi
 
 ```
 src/
-├── index.ts          # Main entry point, re-exports from lib modules
+├── index.ts          # Package API — re-exports what consumers need
 ├── config/
 │   └── index.ts      # App-level config (imports env, exports typed config)
 └── lib/
-    ├── env.ts        # Environment config (@t3-oss/env-core + Zod)
+    ├── env.ts        # Single-file form — no internals to hide yet
     ├── env.test.ts   # Co-located test for env validation
-    ├── example.ts    # Example module
-    └── example.test.ts
+    └── example/      # Folder form — index.ts is the only entry
+        ├── index.ts      # Public: greet()
+        ├── normalize.ts  # Internal — never re-exported
+        └── index.test.ts # Tests through the entry
 ```
+
+## Deep Modules
+
+Small interface, large implementation (Ousterhout). A module absorbs complexity behind a narrow entry point instead of spreading it across many tiny files. **Every implementation in this repo follows this.**
+
+### Decision checks
+
+- Before creating a file: does this **deepen** an existing module, or only **widen** its interface?
+- Before adding an `export`: does a caller actually need this, or is it internal?
+- Many small files that each do very little are shallow modules — they add system complexity instead of hiding it
+
+### Module boundaries
+
+| Layer | Boundary | Interface (narrow) | Hides |
+|-------|----------|--------------------|-------|
+| Package API | `src/index.ts` | Only what consumers import | Everything else under `src/` |
+| Domain | `src/lib/{domain}/index.ts` | Exported functions + types | Helpers, adapters, I/O, third-party types |
+| Config | `src/config/index.ts` | Typed `config` object | Env wiring, defaults, coercion |
+| Env | `src/lib/env.ts` | `env` | Zod schemas, `process.env` access |
+
+### Growth path
+
+A domain starts as **one file**: `src/lib/{domain}.ts`. When it grows internal parts, promote it to a folder — `src/lib/{domain}/index.ts` becomes its only entry, and siblings (`client.ts`, `schema.ts`, `queries.ts`) stay internal.
+
+Never reach into another domain's internals — import from its `index.ts`, or promote the shared piece into a module of its own.
+
+Don't split on file size alone. Past ~500 lines, split by **subdomain**, not by function count.
+
+### Enforcement
+
+- `pnpm unused` (Knip) fails on unused exports — an export no caller needs is a widened interface. Runs in CI.
+- `performance/noBarrelFile` is deliberately `off` in `biome.jsonc`: an `index.ts` barrel *is* the module interface here
+- Tests import the module entry only (see Testing Conventions)
 
 ## Scripts
 
@@ -36,6 +71,7 @@ src/
 - Tests are **co-located** next to source files: `foo.ts` → `foo.test.ts`
 - Use **TDD** with vertical slices (red → green → refactor, one test at a time)
 - Test **behavior through public interfaces**, not implementation details
+- If a test needs to import an internal file, the module boundary is wrong — test through its `index.ts`
 - Run tests: `pnpm test`
 
 ## Commit Format
@@ -60,13 +96,14 @@ Pre-commit hook runs `pnpm lint && pnpm test` automatically.
 ## Development Workflow
 
 1. Plan the change, exploring the existing code first
-2. Implement with TDD in vertical slices (red → green → refactor, one test at a time)
-3. Use the `environment-variables` skill when adding or changing env vars
-4. Commit with a conventional commit message; the pre-commit hook runs lint + tests
+2. Before creating a file or adding an `export`, run the Deep Modules decision checks above
+3. Implement with TDD in vertical slices (red → green → refactor, one test at a time)
+4. Use the `environment-variables` skill when adding or changing env vars
+5. Commit with a conventional commit message; the pre-commit hook runs lint + tests
 
 ## Formatting Rules
 
-- Biome with `ultracite/core` preset
-- Line width: 100
-- Indentation: tabs
+- Biome with the `ultracite/biome/core` preset
+- Line width: 100 (overrides the preset's 80)
+- Indentation: 2 spaces (from the preset)
 - Unused imports: warned
