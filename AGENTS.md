@@ -14,10 +14,12 @@ src/
 └── lib/
     ├── env.ts        # Single-file form — no internals to hide yet
     ├── env.test.ts   # Co-located test for env validation
-    └── example/      # Folder form — index.ts is the only entry
-        ├── index.ts      # Public: greet()
-        ├── normalize.ts  # Internal — never re-exported
-        └── index.test.ts # Tests through the entry
+    ├── example/      # Folder form — index.ts is the only entry
+    │   ├── index.ts      # Public: greet()
+    │   ├── normalize.ts  # Internal — never re-exported
+    │   └── index.test.ts # Tests through the entry
+    ├── result.ts     # Result<T> — the recoverable-error contract
+    └── result.test.ts
 ```
 
 ## Deep Modules
@@ -59,12 +61,10 @@ Don't split on file size alone. Past ~500 lines, split by **subdomain**, not by 
 Biome and `tsconfig` already enforce the mechanical rules — `noExplicitAny`, `noUncheckedIndexedAccess`, `useForOf`, kebab-case filenames, `noParameterProperties`. Those are not repeated here. What tooling cannot check:
 
 - Prefer discriminated unions over boolean flags — never `{ success: boolean; data?: T; error?: E }`
-- Return `Result<T>` for recoverable errors; let unexpected errors propagate to the caller
+- Return `Result<T>` (`src/lib/result.ts`) for recoverable errors; let unexpected errors propagate to the caller
 - Throw typed error classes extending `Error`, never a bare `new Error(string)`
 
 ```ts
-type Result<T, E = Error> = { ok: true; data: T } | { ok: false; error: E };
-
 class ValidationError extends Error {
   readonly field: string;
 
@@ -73,6 +73,11 @@ class ValidationError extends Error {
     this.name = "ValidationError";
     this.field = field;
   }
+}
+
+function parsePort(raw: string): Result<number> {
+  const port = Number(raw);
+  return Number.isInteger(port) ? ok(port) : err(new ValidationError("port", raw));
 }
 ```
 
