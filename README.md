@@ -69,11 +69,11 @@ Full rules — boundaries, growth path, enforcement — are in [AGENTS.md](AGENT
 2. Use TDD: write a failing test, make it pass, refactor
 3. Commit using [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, etc.)
 4. Pre-commit hooks automatically run linting and tests
-5. Push to `main` triggers CI checks and semantic-release
+5. Push to `main` triggers CI checks (and semantic-release, in projects generated from this template)
 
 ### Skills
 
-The template ships one Claude Code skill — `/environment-variables`, which walks you through adding a validated env var. See **[HOWTO.md](HOWTO.md)**.
+The template ships two Claude Code skills — `/environment-variables` for adding a validated env var, and `/bugfix` for the failing-test-first bug fix workflow. See **[HOWTO.md](HOWTO.md)**.
 
 ### Committing
 
@@ -106,6 +106,8 @@ GitHub Actions runs on push to `main`:
 
 1. Lint, type-check, test, and unused code detection
 2. If all checks pass, semantic-release creates a GitHub Release with tag
+
+The release job is skipped on this repository because it is a GitHub template — a template has no consumers, so tagging it would version an artifact nobody fetches. Repos generated from it are not templates, so releases run there automatically with no setup step.
 
 ## Contributing
 

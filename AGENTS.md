@@ -135,7 +135,8 @@ Pre-commit hook runs `pnpm lint && pnpm test` automatically.
 2. Before creating a file or adding an `export`, run the Deep Modules decision checks above
 3. Implement with TDD in vertical slices (red → green → refactor, one test at a time)
 4. Use the `environment-variables` skill when adding or changing env vars
-5. Commit with a conventional commit message; the pre-commit hook runs lint + tests
+5. Use the `bugfix` skill when something is reported broken — failing test first, then the fix
+6. Commit with a conventional commit message; the pre-commit hook runs lint + tests
 
 ## Formatting Rules
 

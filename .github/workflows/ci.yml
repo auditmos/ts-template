@@ -35,7 +35,10 @@ jobs:
   release:
     name: Release
     needs: checks
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # Skipped on the template repo itself — a template has no consumers, so a
+    # release would tag an artifact nobody fetches. Repos generated from it are
+    # not templates, so they get releases with no setup step.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && !github.event.repository.is_template
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
