@@ -9,6 +9,9 @@ TypeScript template for building tool/service projects. Uses ESM-only modules wi
 ```
 src/
 ├── index.ts          # Package API — re-exports what consumers need
+├── bin.ts            # Executable — shebang, streams, exit code
+├── cli.ts            # Single-file form — run(argv): Result<string>
+├── cli.test.ts
 ├── config/
 │   └── index.ts      # App-level config (imports env, exports typed config)
 └── lib/
@@ -41,6 +44,10 @@ Small interface, large implementation (Ousterhout). A module absorbs complexity 
 | Domain | `src/lib/{domain}/index.ts` | Exported functions + types | Helpers, adapters, I/O, third-party types |
 | Config | `src/config/index.ts` | Typed `config` object | Env wiring, defaults, coercion |
 | Env | `src/lib/env.ts` | `env` | Zod schemas, `process.env` access |
+| CLI | `src/cli.ts` | `run(argv): Result<string>` | Argument parsing, usage text, command dispatch |
+| Executable | `src/bin.ts` | none — a process entry | `process.argv`, stdout/stderr, exit code |
+
+`bin.ts` stays a shim on purpose: keeping streams and exit codes out of `run()` is what lets the CLI be tested by calling a function instead of spawning a process.
 
 ### Growth path
 
@@ -86,6 +93,7 @@ function parsePort(raw: string): Result<number> {
 | Command | Description |
 |---------|-------------|
 | `pnpm build` | Build with tsup (ESM + declarations) |
+| `pnpm dev` | Run the CLI from source with tsx (no build step) |
 | `pnpm lint` | Check code with Biome |
 | `pnpm lint:fix` | Auto-fix lint/format issues |
 | `pnpm types` | Type-check with tsc --noEmit |

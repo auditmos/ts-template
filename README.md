@@ -20,6 +20,7 @@ This installs dependencies and configures git hooks automatically via the `prepa
 | Command | Description |
 |---------|-------------|
 | `pnpm build` | Build with tsup (ESM + declarations) |
+| `pnpm dev` | Run the CLI from source with tsx (no build step) |
 | `pnpm lint` | Check code with Biome |
 | `pnpm lint:fix` | Auto-fix lint/format issues |
 | `pnpm types` | Type-check with tsc --noEmit |
@@ -27,6 +28,30 @@ This installs dependencies and configures git hooks automatically via the `prepa
 | `pnpm test:watch` | Run tests in watch mode |
 | `pnpm unused` | Detect unused code with Knip |
 | `pnpm update` | Interactive dependency updates with Taze |
+
+## CLI
+
+During development, run the CLI straight from source — no build step:
+
+```bash
+pnpm dev greet Ada          # Hello, Ada!
+pnpm dev --help             # usage
+```
+
+The build produces the same thing as a standalone executable:
+
+```bash
+pnpm build
+
+./dist/bin.js greet Ada     # Hello, Ada!
+./dist/bin.js nope          # stderr + exit 1
+```
+
+`pnpm dev` uses `tsx` rather than Node's native type stripping, because TypeScript's `Node16` resolution writes `.js` specifiers that Node will not map back to `.ts` files.
+
+`bin` maps the command `ts-template` to `dist/bin.js`, so installing the package exposes it on the PATH. Note the package is `private: true`, so that happens via a local install or `pnpm link`, not from a registry.
+
+`src/bin.ts` is a deliberately thin shim owning the shebang, streams, and exit code. All behaviour lives in `src/cli.ts` as `run(argv): Result<string>`, which is why the CLI is tested by calling a function rather than spawning a process.
 
 ## Architecture
 
