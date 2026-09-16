@@ -28,6 +28,7 @@ Small interface, large implementation (Ousterhout). A module absorbs complexity 
 
 - Before creating a file: does this **deepen** an existing module, or only **widen** its interface?
 - Before adding an `export`: does a caller actually need this, or is it internal?
+- Every export from an `index.ts` declares an explicit return type — the interface is the contract
 - Many small files that each do very little are shallow modules — they add system complexity instead of hiding it
 
 ### Module boundaries
@@ -52,6 +53,28 @@ Don't split on file size alone. Past ~500 lines, split by **subdomain**, not by 
 - `pnpm unused` (Knip) fails on unused exports — an export no caller needs is a widened interface. Runs in CI.
 - `performance/noBarrelFile` is deliberately `off` in `biome.jsonc`: an `index.ts` barrel *is* the module interface here
 - Tests import the module entry only (see Testing Conventions)
+
+## Type & Error Design
+
+Biome and `tsconfig` already enforce the mechanical rules — `noExplicitAny`, `noUncheckedIndexedAccess`, `useForOf`, kebab-case filenames, `noParameterProperties`. Those are not repeated here. What tooling cannot check:
+
+- Prefer discriminated unions over boolean flags — never `{ success: boolean; data?: T; error?: E }`
+- Return `Result<T>` for recoverable errors; let unexpected errors propagate to the caller
+- Throw typed error classes extending `Error`, never a bare `new Error(string)`
+
+```ts
+type Result<T, E = Error> = { ok: true; data: T } | { ok: false; error: E };
+
+class ValidationError extends Error {
+  readonly field: string;
+
+  constructor(field: string, message: string) {
+    super(message);
+    this.name = "ValidationError";
+    this.field = field;
+  }
+}
+```
 
 ## Scripts
 
