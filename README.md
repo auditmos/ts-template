@@ -30,20 +30,19 @@ This installs dependencies and configures git hooks automatically via the `prepa
 
 ## Development Workflow
 
-This template includes Claude Code skills that guide you through a structured workflow — from idea to implementation. See **[HOWTO.md](HOWTO.md)** for a full guide on using the skills.
+1. Write tests co-located with source files (`*.test.ts`)
+2. Use TDD: write a failing test, make it pass, refactor
+3. Commit using [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, etc.)
+4. Pre-commit hooks automatically run linting and tests
+5. Push to `main` triggers CI checks and semantic-release
 
-Quick overview:
+### Skills
 
-1. `/grill-me` — Pressure-test your idea
-2. `/write-a-prd` — Define requirements as a GitHub issue
-3. `/prd-to-plan` — Break the PRD into vertical slices
-4. `/prd-to-issues` — Create GitHub issues from the plan
-5. `/tdd` — Implement using test-driven development
-6. `/environment-variables` — Add validated env vars
+The template ships one Claude Code skill — `/environment-variables`, which walks you through adding a validated env var. See **[HOWTO.md](HOWTO.md)**.
 
 ### Committing
 
-When you're done implementing (e.g. after a `/tdd` cycle), just ask Claude Code to commit:
+When you're done implementing, just ask Claude Code to commit:
 
 ```
 commit this
@@ -56,14 +55,6 @@ You can also use the built-in shortcut:
 ```
 /commit
 ```
-
-### Manual workflow
-
-1. Write tests co-located with source files (`*.test.ts`)
-2. Use TDD: write a failing test, make it pass, refactor
-3. Commit using [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, etc.)
-4. Pre-commit hooks automatically run linting and tests
-5. Push to `main` triggers CI checks and semantic-release
 
 ## Environment Variables
 

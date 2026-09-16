@@ -59,11 +59,10 @@ Pre-commit hook runs `pnpm lint && pnpm test` automatically.
 
 ## Development Workflow
 
-1. **write-a-prd** — Define requirements through structured interview
-2. **prd-to-plan** — Break PRD into phased vertical slices
-3. **prd-to-issues** — Create GitHub issues from the plan
-4. **tdd** — Implement each slice using test-driven development
-5. **environment-variables** — Manage env vars with validation
+1. Plan the change, exploring the existing code first
+2. Implement with TDD in vertical slices (red → green → refactor, one test at a time)
+3. Use the `environment-variables` skill when adding or changing env vars
+4. Commit with a conventional commit message; the pre-commit hook runs lint + tests
 
 ## Formatting Rules
 
