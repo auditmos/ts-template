@@ -15,6 +15,47 @@ pnpm install
 
 This installs dependencies and configures git hooks automatically via the `prepare` script.
 
+## After generating from this template
+
+Nothing is broken on arrival — `pnpm install` is enough to lint, type-check, test, build, and run the CLI. What follows is the part that is still the template's rather than yours.
+
+**Rename** — one command covers everything that is genuinely wrong until you change it:
+
+```bash
+pnpm rename my-project
+```
+
+It rewrites `name` and the `bin` command in `package.json`, the CLI usage text, and this README's title, then reports what it changed. A scoped name like `@acme/my-project` still gets a plain `my-project` command on the PATH.
+
+**Replace the demo code.** It is working reference material for the deep-module folder form, `Result<T>`, and the CLI wiring, so keep it until the example stops being useful:
+
+- [ ] `src/lib/example/` — the `greet` / `normalize` module
+- [ ] the `greet` command in `src/cli.ts` (the usage text is handled by `pnpm rename`)
+- [ ] the `greet` export in `src/index.ts`
+- [ ] the matching `*.test.ts` files
+
+**Rewrite the docs** — these still describe the template itself:
+
+- [ ] this README
+- [ ] the project overview and structure tree in `AGENTS.md` (`CLAUDE.md` is a symlink to it)
+
+**Decide:**
+
+- [ ] `private: true` stays unless you publish. To publish, drop it and add `@semantic-release/npm` plus a `files` field — the current config only creates GitHub Releases, with no artifact attached.
+
+### Two things that surprise people
+
+**Your first commit must be conventional.** commitlint is active the moment `pnpm install` finishes:
+
+```bash
+$ git commit -m "my first commit"
+✖ type may not be empty [type-empty]
+```
+
+Use something like `chore: initial commit`.
+
+**Releases turn themselves on.** Your repo is not a GitHub template, so the release job that is skipped upstream runs here: the first push to `main` containing a `feat:` commit cuts v1.0.0. There is no setup step, and equally no opt-in.
+
 ## Scripts
 
 | Command | Description |
@@ -28,6 +69,7 @@ This installs dependencies and configures git hooks automatically via the `prepa
 | `pnpm test:watch` | Run tests in watch mode |
 | `pnpm unused` | Detect unused code with Knip |
 | `pnpm update` | Interactive dependency updates with Taze |
+| `pnpm rename <name>` | Rename the package, CLI command, usage text, and README title |
 
 ## CLI
 
