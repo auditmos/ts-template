@@ -100,7 +100,8 @@ function parsePort(raw: string): Result<number> {
 | `pnpm test` | Run tests with Vitest |
 | `pnpm test:watch` | Run tests in watch mode |
 | `pnpm unused` | Detect unused code with Knip |
-| `pnpm update` | Interactive dependency updates with Taze |
+| `pnpm deps` | Interactive dependency updates within current ranges (Taze) |
+| `pnpm deps:major` | Interactive dependency updates including major versions (Taze) |
 | `pnpm rename <name>` | Rename the package, CLI command, usage text, and README title |
 
 ## Testing Conventions

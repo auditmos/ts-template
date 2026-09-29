@@ -14,6 +14,8 @@
   },
   "scripts": {
     "build": "tsup",
+    "deps": "taze --interactive",
+    "deps:major": "taze major --interactive",
     "dev": "tsx src/bin.ts",
     "lint": "biome check",
     "lint:fix": "biome check --write",
@@ -22,8 +24,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "types": "tsc --noEmit",
-    "unused": "knip",
-    "update": "taze --interactive"
+    "unused": "knip"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint && pnpm test",
