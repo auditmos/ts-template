@@ -13,7 +13,7 @@
     "ts-template": "./dist/bin.js"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "deps": "taze --interactive",
     "deps:major": "taze major --interactive",
     "dev": "tsx src/bin.ts",
@@ -46,9 +46,9 @@
     "semantic-release": "^25.0.9",
     "simple-git-hooks": "^2.14.0",
     "taze": "^21.2.0",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.23.0",
     "tsx": "^4.23.15",
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "ultracite": "^7.12.1",
     "vitest": "^5.0.2"
   },

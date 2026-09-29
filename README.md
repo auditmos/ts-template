@@ -60,7 +60,7 @@ Use something like `chore: initial commit`.
 
 | Command | Description |
 |---------|-------------|
-| `pnpm build` | Build with tsup (ESM + declarations) |
+| `pnpm build` | Build with tsdown (ESM + declarations) |
 | `pnpm dev` | Run the CLI from source with tsx (no build step) |
 | `pnpm lint` | Check code with Biome |
 | `pnpm lint:fix` | Auto-fix lint/format issues |
